@@ -174,6 +174,30 @@ void Foam::constHTemperatureFvPatchScalarField::updateCoeffs()
     mixedFvPatchField<scalar>::updateCoeffs();
 }
 
+// #################
+void Foam::constHTemperatureFvPatchScalarField::
+setTInf(const scalarField& TInf)
+{
+
+
+    if (TInf.size() != Tinf_.size())
+    {
+        FatalErrorIn
+        (
+            "Foam::constHTemperatureFvPatchScalarField"
+            "setTInf"
+            "("
+                "const scalarField& "
+            ")"
+        )
+            << " Patch size does not match in the setTinf function \n"
+            << nl << nl
+            << "There seems to be an issue in the BC specifications or in the code. "
+            << " Please contact the code development team." << exit(FatalError);
+    }
+    Tinf_ = TInf;
+}
+// #####################
 
 void Foam::constHTemperatureFvPatchScalarField::
 write(Ostream& os) const

@@ -1,4 +1,7 @@
+DEV_PATH=./../../../packages
+DEV1_PATH=./../../../lib
 EXE_INC = \
+	-I$(DEV_PATH)/regionModels/surfaceFilmModels/lnInclude \
     -I$(LIB_SRC)/finiteVolume/lnInclude \
     -I$(LIB_SRC)/meshTools/lnInclude \
     -I$(LIB_SRC)/thermophysicalModels/chemistryModel/lnInclude \
@@ -14,10 +17,14 @@ EXE_INC = \
     -I$(LIB_SRC)/turbulenceModels/compressible/LES/lnInclude \
     -I$(LIB_SRC)/turbulenceModels/LES/LESdeltas/lnInclude \
     -I$(LIB_SRC)/regionModels/regionModel/lnInclude \
-    -I$(LIB_SRC)/regionModels/pyrolysisModels/lnInclude
+    -I$(LIB_SRC)/regionModels/pyrolysisModels/lnInclude \
+    -I$(LIB_SRC)/OpenFOAM/lnInclude \
+    -I$(DEV1_PATH)/fvPatchFieldsPyrolysis/lnInclude \ 
+    -I$(DEV1_PATH)/fvPatchFields/lnInclude
 
 LIB_LIBS = \
     -lfiniteVolume \
+    -lOpenFOAM \
     -lmeshTools \
     -lchemistryModel \
     -lspecie \
@@ -30,4 +37,6 @@ LIB_LIBS = \
     -lLESdeltas \
     -lregionModels \
     -lradiationModels \
-    -lreactionThermophysicalModels
+    -lreactionThermophysicalModels \
+    -L$(FOAM_USER_LIBBIN) \
+    -lfvPatchFieldsPyrolysis

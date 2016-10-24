@@ -36,7 +36,7 @@ License
 #include "singleStepReactingMixture.H"
 #include "thermoPhysicsTypes.H"
 
-
+#include "pyroCUPOneDimV1.H"
 // * * * * * * * * * * * * * * * * Constructors  * * * * * * * * * * * * * * //
 
 Foam::flowRateInletVelocityFuelConvertCoupledFvPatchVectorField::
@@ -157,9 +157,28 @@ void Foam::flowRateInletVelocityFuelConvertCoupledFvPatchVectorField::updateCoef
     // heat of combustion [J/kg]
     scalar qFuel(singleMixture.qFuel().value());
 
-    // convert to equivalent gaseous fuel
-    phi = phi*hocPyr_/qFuel;
 
+
+    scalarField hocPyrData(nbrPatch.size(),hocPyr_);
+
+    // Getting the heat of combustion of pyrolsate from the pyrolysis model if CUP pyrolysis model is used.. 
+            HashTable<const Foam::regionModels::pyrolysisModels::pyroCUPOneDimV1*> models =
+                db().time().lookupClass<Foam::regionModels::pyrolysisModels::pyroCUPOneDimV1>();
+
+            forAllConstIter(HashTable<const Foam::regionModels::pyrolysisModels::pyroCUPOneDimV1*>, models, iter)
+            {
+                if (iter()->regionMesh().name() == nbrPatch.boundaryMesh().mesh().name())
+                {
+                   Foam::regionModels::pyrolysisModels::pyroCUPOneDimV1& CUPModelObj = const_cast<Foam::regionModels::pyrolysisModels::pyroCUPOneDimV1&>(*iter());
+                   CUPModelObj.getPyroHOC(hocPyrData,hocPyr_,nbrPatch.index());
+                }
+            }
+
+
+    // convert to equivalent gaseous fuel
+    //phi = phi * hocPyr_ / qFuel;
+    phi = phi * hocPyrData / qFuel;
+   
     mpp.distribute(phi);
 
     const surfaceScalarField& phiName =

@@ -173,6 +173,8 @@ public:
             //- Update the coefficients associated with the patch field
             virtual void updateCoeffs();
 
+        // Function to set the value of TInf_ field
+        virtual void setTInf(const scalarField&);
 
         //- Write
         virtual void write(Ostream&) const;

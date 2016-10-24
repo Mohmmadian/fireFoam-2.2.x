@@ -37,6 +37,7 @@ License
 #include "radiationModel.H"
 #include "absorptionEmissionModel.H"
 
+#include "pyroCUPOneDimV1.H"
 // * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * //
 
 namespace Foam
@@ -57,7 +58,7 @@ fixedIncidentRadiationCoupledMixedFvPatchScalarField
 )
 :
     mixedFvPatchScalarField(p, iF),
-    radiationCoupledBase(p, "undefined", scalarField::null()),
+    radiationCoupledBaseFF(p, "undefined", "undefined", scalarField::null(), scalarField::null()),
     neighbourFieldName_("undefined-neighbourFieldName"),
     neighbourFieldRadiativeName_("undefined-neigbourFieldRadiativeName"),
     fieldRadiativeName_("undefined-fieldRadiativeName"),
@@ -81,11 +82,13 @@ fixedIncidentRadiationCoupledMixedFvPatchScalarField
 )
 :
     mixedFvPatchScalarField(ptf, p, iF, mapper),
-    radiationCoupledBase
+    radiationCoupledBaseFF
     (
         p,
         ptf.emissivityMethod(),
-        ptf.emissivity_
+        ptf.absorptivityMethod(),
+        ptf.emissivity_,
+        ptf.absorptivity_
     ),
     neighbourFieldName_(ptf.neighbourFieldName_),
     neighbourFieldRadiativeName_(ptf.neighbourFieldRadiativeName_),
@@ -105,7 +108,7 @@ fixedIncidentRadiationCoupledMixedFvPatchScalarField
 )
 :
     mixedFvPatchScalarField(p, iF),
-    radiationCoupledBase(p, dict),
+    radiationCoupledBaseFF(p, dict),
     neighbourFieldName_(dict.lookup("neighbourFieldName")),
     neighbourFieldRadiativeName_(dict.lookup("neighbourFieldRadiativeName")),
     fieldRadiativeName_(dict.lookup("fieldRadiativeName")),
@@ -160,11 +163,13 @@ fixedIncidentRadiationCoupledMixedFvPatchScalarField
 )
 :
     mixedFvPatchScalarField(wtcsf, iF),
-    radiationCoupledBase
+    radiationCoupledBaseFF
     (
         wtcsf.patch(),
         wtcsf.emissivityMethod(),
-        wtcsf.emissivity_
+        wtcsf.absorptivityMethod(),
+        wtcsf.emissivity_,
+        wtcsf.absorptivity_
     ),
     neighbourFieldName_(wtcsf.neighbourFieldName_),
     neighbourFieldRadiativeName_(wtcsf.neighbourFieldRadiativeName_),
@@ -312,6 +317,17 @@ updateCoeffs()
             );
 
         scalarField nbrTotalFlux = -radField;
+
+
+        pyroModelType&  pyroModelObj = const_cast<pyroModelType&>(pyroModel(mesh,mesh.name()));
+
+       if (typeid(pyroModelObj)  == typeid(Foam::regionModels::pyrolysisModels::pyroCUPOneDimV1))
+       {
+             Foam::regionModels::pyrolysisModels::pyroCUPOneDimV1& CUPModelObj = dynamic_cast<Foam::regionModels::pyrolysisModels::pyroCUPOneDimV1&>(pyroModelObj);
+             CUPModelObj.setQrad(-nbrTotalFlux,patch().index());
+             CUPModelObj.setQconv(scalarField(0.0,patch().size()),patch().index());
+       }
+
 
 /*
         Twall =

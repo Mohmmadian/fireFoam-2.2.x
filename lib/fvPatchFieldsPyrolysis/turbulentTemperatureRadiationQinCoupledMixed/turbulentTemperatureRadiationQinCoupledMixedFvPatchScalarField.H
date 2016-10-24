@@ -78,7 +78,7 @@ SourceFiles
 
 #include "mixedFvPatchFields.H"
 #include "temperatureCoupledBase.H"
-#include "radiationCoupledBase.H"
+#include "radiationCoupledBaseFF.H"
 
 // * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * //
 
@@ -96,7 +96,7 @@ class turbulentTemperatureRadiationQinCoupledMixedFvPatchScalarField
 :
     public mixedFvPatchScalarField,
     public temperatureCoupledBase,
-    public radiationCoupledBase   
+    public radiationCoupledBaseFF
 {
     // Private data
 

@@ -4,4 +4,6 @@ constHTemperatureRadiationFvPatchScalarField/constHTemperatureRadiationFvPatchSc
 alphaSgsFireWallFunction/alphaSgsFireWallFunctionFvPatchScalarField.C
 mutUSpaldingBlowingWallFunction/mutUSpaldingBlowingWallFunctionFvPatchScalarField.C
 
+muSgsFireWallFunction/muSgsFireWallFunctionFvPatchScalarField.C
+
 LIB = $(FOAM_USER_LIBBIN)/libpatchFieldsFireFOAM

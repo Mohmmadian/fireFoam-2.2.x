@@ -41,6 +41,7 @@ License
 #include "rhoConst.H"
 #include "specie.H"
 
+#include "pyroCUPOneDimV1.H"
 // * * * * * * * * * * * * * * * * Constructors  * * * * * * * * * * * * * * //
 
 Foam::flowRateInletVelocityPyrolysisCoupledFvPatchVectorField::
@@ -189,8 +190,25 @@ void Foam::flowRateInletVelocityPyrolysisCoupledFvPatchVectorField::updateCoeffs
     scalar hocPyr = (hocSolid_ * rhoV - hocChar * rhoChar) / (rhoV - rhoChar);
     //Info << "HOC for pyrolysate is " << hocPyr << endl;
 
+    scalarField hocPyrData(nbrPatch.size(),hocPyr);
+
+    // Getting the heat of combustion of pyrolsate from the pyrolysis model if CUP pyrolysis model is used.. 
+            HashTable<const Foam::regionModels::pyrolysisModels::pyroCUPOneDimV1*> models =
+                db().time().lookupClass<Foam::regionModels::pyrolysisModels::pyroCUPOneDimV1>();
+
+            forAllConstIter(HashTable<const Foam::regionModels::pyrolysisModels::pyroCUPOneDimV1*>, models, iter)
+            {
+                if (iter()->regionMesh().name() == nbrPatch.boundaryMesh().mesh().name())
+                {
+                   Foam::regionModels::pyrolysisModels::pyroCUPOneDimV1& CUPModelObj = const_cast<Foam::regionModels::pyrolysisModels::pyroCUPOneDimV1&>(*iter());
+                   CUPModelObj.getPyroHOC(hocPyrData,hocPyr,nbrPatch.index());
+                }
+            }
+
+
     // convert to equivalent gaseous fuel
-    phi = phi * hocPyr / qFuel;
+    //phi = phi * hocPyr / qFuel;
+    phi = phi * hocPyrData / qFuel;
 
     mpp.distribute(phi);
 

@@ -25,6 +25,7 @@
         if (mag(g).value() > 0.0) 
         {    
             flameHeight = dimensionedScalar("zero",dimLength,0.0);
+            flameHeight2 = dimensionedScalar("zero",dimLength,0.0);
 
             forAll (ft.internalField(),cellI)
             {
@@ -32,11 +33,16 @@
                 { 
                     flameHeight[cellI] = mag( cellCentres[cellI] & (g/mag(g)).value() );
                 }
+                if (ft[cellI] >= 0.2*ftSt)
+                { 
+                    flameHeight2[cellI] = mag( cellCentres[cellI] & (g/mag(g)).value() );
+                }
             }
 
             outFlameHeight <<  runTime.value() << "  "     
                     << max(flameHeight).value() << "  "
-                    <<  nl;
+                    << max(flameHeight2).value() << "  "
+                    << endl;
         }
 
 
@@ -125,3 +131,5 @@
             d = DM;
         }
         dSgs = (turbulence->alphaEff()-turbulence->alpha())/rho;
+
+#include "rti.H"

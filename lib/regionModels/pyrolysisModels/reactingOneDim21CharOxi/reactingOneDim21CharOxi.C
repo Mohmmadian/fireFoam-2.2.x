@@ -69,6 +69,8 @@ void reactingOneDim21CharOxi::updateCharOxi()
     // hardcode HoC for char [J/kg]
     dimensionedScalar HocChar("HocChar",dimEnergy/dimMass,32.8e6);
 
+    label localPyrolysisFaceI = 0;
+
     forAll(intCoupledPatchIDs_, i)
     {
         const label patchI = intCoupledPatchIDs_[i];
@@ -110,7 +112,7 @@ void reactingOneDim21CharOxi::updateCharOxi()
 
         forAll(Xcharp, faceI)
         {
-            const labelList& cells = boundaryFaceCells_[faceI];
+            const labelList& cells = boundaryFaceCells_[localPyrolysisFaceI];
             scalar charVolume = 0.0;
             scalar totalVolume = 0.0;
             forAll(cells, k)
@@ -145,6 +147,8 @@ void reactingOneDim21CharOxi::updateCharOxi()
 
             //for HRR diagnostics (sum at the patch is the HRR) [kW]
             charOxiShp[faceI] = charOxiSh_[cells[0]] * cellV[cells[0]];
+
+            localPyrolysisFaceI++;
         }
     }
 }

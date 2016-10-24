@@ -78,7 +78,7 @@ alphaSgsFireWallFunctionFvPatchScalarField
 )
 :
     fixedValueFvPatchScalarField(p, iF),
-    QcFlame_(20000.0),
+    QcFlame_(18000.0),
     QcThreshold_(2000.0)
 {
     //checkType();
@@ -110,7 +110,7 @@ alphaSgsFireWallFunctionFvPatchScalarField
 )
 :
     fixedValueFvPatchScalarField(p, iF, dict),
-    QcFlame_(dict.lookupOrDefault<scalar>("QcFlame", 20000.0)),
+    QcFlame_(dict.lookupOrDefault<scalar>("QcFlame", 18000.0)),
     QcThreshold_(dict.lookupOrDefault<scalar>("QcThreshold", 2000.0))
 {
 //    checkType();

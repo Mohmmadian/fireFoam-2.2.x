@@ -32,6 +32,7 @@ License
 #include "radiationModel.H"
 #include "absorptionEmissionModel.H"
 
+#include "pyroCUPOneDimV1.H"
 // * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * //
 
 namespace Foam
@@ -162,6 +163,28 @@ void fixedIncidentRadiationFvPatchScalarField::updateCoeffs()
     
     const radiation::radiationModel& radiation =
         db().lookupObject<radiation::radiationModel>("radiationProperties");
+
+           
+            HashTable<const Foam::regionModels::pyrolysisModels::pyroCUPOneDimV1*> models =
+                patch().boundaryMesh().mesh().time().lookupClass<Foam::regionModels::pyrolysisModels::pyroCUPOneDimV1>();
+
+            forAllConstIter(HashTable<const Foam::regionModels::pyrolysisModels::pyroCUPOneDimV1*>, models, iter)
+            {
+                if (iter()->regionMesh().name() == patch().boundaryMesh().mesh().name())
+                {
+                   Foam::regionModels::pyrolysisModels::pyroCUPOneDimV1& CUPModelObj = const_cast<Foam::regionModels::pyrolysisModels::pyroCUPOneDimV1&>(*iter());
+                   CUPModelObj.setQrad(QrIncident_,patch().index());
+                   CUPModelObj.setQconv(scalarField(patch().size(),0.0),patch().index());
+                   //iter()->setQrad(QrIncident_,patch().index());
+                 //pyroModelType&  pyroModelObj = const_cast<pyroModelType&>(pyroModel(mesh,mesh.name()));
+
+                //  Foam::regionModels::pyrolysisModels::pyroCUPOneDimV1& CUPModelObj = dynamic_cast<Foam::regionModels::pyrolysisModels::pyroCUPOneDimV1&>(pyroModelObj);
+             //CUPModelObj.setQrad(radField,patch().index());
+             //CUPModelObj.setQconv(-nbrConvFlux,patch().index());
+                }
+            }
+
+
 
 //Info << "emissivity is " << radiation.absorptionEmission().a() << endl;
 

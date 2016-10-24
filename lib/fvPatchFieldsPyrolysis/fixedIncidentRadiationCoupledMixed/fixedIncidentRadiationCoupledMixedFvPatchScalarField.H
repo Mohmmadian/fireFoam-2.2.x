@@ -77,7 +77,7 @@ SourceFiles
 #define fixedIncidentRadiationCoupledMixedFvPatchScalarField_H
 
 #include "mixedFvPatchFields.H"
-#include "radiationCoupledBase.H"
+#include "radiationCoupledBaseFF.H"
 
 // * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * //
 
@@ -94,7 +94,7 @@ namespace compressible
 class fixedIncidentRadiationCoupledMixedFvPatchScalarField
 :
     public mixedFvPatchScalarField,
-    public radiationCoupledBase
+    public radiationCoupledBaseFF
 {
     // Private data
 

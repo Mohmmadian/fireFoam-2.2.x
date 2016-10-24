@@ -120,6 +120,11 @@ protected:
             //- Heat release [J/s/m3]
             volScalarField chemistrySh_;
 
+           //- Emissivity at the boundary
+            volScalarField emmBnd_;        
+
+           //- Absorptivity at the boundary  
+            volScalarField absBnd_;        
 
         // Source term fields
 
@@ -169,6 +174,9 @@ protected:
         //- Update submodels
         virtual void updateFields();
 
+        //- Update emissivity and absorptivity at boundaries
+        virtual void updateBndEmmAbs();
+
         //- Update/move mesh based on change in mass
         void updateMesh(const scalarField& mass0);
 
@@ -191,7 +199,7 @@ protected:
             virtual void solveEnergy();
 
             //- Solve solid species mass conservation
-            void solveSpeciesMass();
+            virtual void solveSpeciesMass();
 
 
 public:
@@ -280,6 +288,9 @@ public:
 
             //- Evolve the pyrolysis equations
             virtual void evolveRegion();
+
+            //- Post-evolve region
+            virtual void postEvolveRegion();
 
 
        // I-O

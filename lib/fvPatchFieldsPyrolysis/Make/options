@@ -1,7 +1,11 @@
-DEV_PATH=./../../../libs
+DEV_PATH=./../
 
 EXE_INC = \
+    -I$(DEV_PATH)/thermophysicalModels/radiation/derivedFvPatchFields/lnInclude \
+    -I$(DEV_PATH)/regionModels/pyrolysisModels/lnInclude \
     -I$(LIB_SRC)/finiteVolume/lnInclude \
+    -I$(LIB_SRC)/regionModels/regionModel/lnInclude \
+    -I$(LIB_SRC)/regionModels/pyrolysisModels/lnInclude \
     -I$(LIB_SRC)/thermophysicalModels/basic/lnInclude \
     -I$(LIB_SRC)/thermophysicalModels/specie/lnInclude \
     -I$(LIB_SRC)/thermophysicalModels/solidSpecie/lnInclude \
@@ -22,12 +26,17 @@ EXE_INC = \
     -I$(LIB_SRC)/thermophysicalModels/chemistryModel/lnInclude\
     -I$(LIB_SRC)/thermophysicalModels/reactionThermo/lnInclude \
     -I$(LIB_SRC)/thermophysicalModels/radiationModels/lnInclude \
-    -I$(LIB_SRC)/sampling/lnInclude
+    -I$(LIB_SRC)/sampling/lnInclude \
+     
 
 
 EXE_LIBS = \
+    -L$(FOAM_USER_LIBBIN) \
+        -lRadiationBCs_FMG \
     -lbasicThermophysicalModels \
     -lspecie \
     -lfiniteVolume \
     -lcompressibleRASModels \
-    -lcompressibleLESModels 
+    -lcompressibleLESModels \
+    -lpyrolysisModels \
+    -lregionModels

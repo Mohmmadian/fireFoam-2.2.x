@@ -213,6 +213,13 @@ void reactingOneDim21::updateFields()
 }
 
 
+void reactingOneDim21::updateBndEmmAbs()
+{
+    emmBnd_ == radiation_->absorptionEmission().e()();
+    absBnd_ == radiation_->absorptionEmission().a()();
+}
+
+
 void reactingOneDim21::updateMesh(const scalarField& mass0)
 {
     if (!moveMesh_)
@@ -457,6 +464,40 @@ reactingOneDim21::reactingOneDim21
         regionMesh(),
         dimensionedScalar("zero", dimEnergy/dimTime/dimVolume, 0.0)
     ),
+  
+    emmBnd_
+    (
+        IOobject
+        (
+            "emmBnd",
+            time().timeName(),
+            regionMesh(),
+            //IOobject::NO_READ,
+            IOobject::READ_IF_PRESENT,
+            IOobject::AUTO_WRITE
+        ),
+        radiation_->absorptionEmission().e()()
+        //regionMesh(),
+        //dimensionedScalar("zero", dimless/dimLength, 0.0)
+        //dimensionedScalar("zero", dimless, 0.0)
+    ),
+
+    absBnd_
+    (
+        IOobject
+        (
+            "absBnd",
+            time().timeName(),
+            regionMesh(),
+            //IOobject::NO_READ,
+            IOobject::READ_IF_PRESENT,
+            IOobject::AUTO_WRITE
+        ),
+        emmBnd_
+        //regionMesh(),
+        //dimensionedScalar("zero", dimless/dimLength, 0.0)
+        //dimensionedScalar("zero", dimless, 0.0)
+    ),
 
     Qr_
     (
@@ -558,6 +599,40 @@ reactingOneDim21::reactingOneDim21
         ),
         regionMesh(),
         dimensionedScalar("zero", dimEnergy/dimTime/dimVolume, 0.0)
+    ),
+    
+    emmBnd_
+    (
+        IOobject
+        (
+            "emmBnd",
+            time().timeName(),
+            regionMesh(),
+            //IOobject::NO_READ,
+            IOobject::READ_IF_PRESENT,
+            IOobject::AUTO_WRITE
+        ),
+        radiation_->absorptionEmission().e()()
+        //regionMesh(),
+        //dimensionedScalar("zero", dimless/dimLength, 0.0)
+        //dimensionedScalar("zero", dimless, 0.0)
+    ),
+
+    absBnd_
+    (
+        IOobject
+        (
+            "absBnd",
+            time().timeName(),
+            regionMesh(),
+            //IOobject::NO_READ,
+            IOobject::READ_IF_PRESENT,
+            IOobject::AUTO_WRITE
+        ),
+        emmBnd_
+        //regionMesh(),
+        //dimensionedScalar("zero", dimless/dimLength, 0.0)
+        //dimensionedScalar("zero", dimless, 0.0)
     ),
 
     Qr_
@@ -671,6 +746,18 @@ tmp<volScalarField> reactingOneDim21::kappaRad() const
     return radiation_->absorptionEmission().a();
 }
 
+/*
+tmp<volScalarField> reactingOneDim21::emissivity() const
+{
+    return radiation_->absorptionEmission().e();
+}
+
+
+tmp<volScalarField> reactingOneDim21::absorptivity() const
+{
+    return radiation_->absorptionEmission().e();
+}
+*/
 
 tmp<volScalarField> reactingOneDim21::kappa() const
 {
@@ -693,6 +780,18 @@ void reactingOneDim21::preEvolveRegion()
     {
         solidChemistry_->setCellReacting(cellI, true);
     }
+
+    // Updating emissivity and absorptivity at boundaries
+    //updateBndEmmAbs();
+}
+
+
+void reactingOneDim21::postEvolveRegion()
+{
+    pyrolysisModel::postEvolveRegion();
+
+    // Updating emissivity and absorptivity at boundaries
+    //updateBndEmmAbs();
 }
 
 
@@ -729,6 +828,9 @@ void reactingOneDim21::evolveRegion()
     calculateMassTransfer();
 
     solidThermo_.correct();
+
+    // Updating emissivity and absorptivity at boundaries
+    updateBndEmmAbs();
 
     Info<< "pyrolysis min/max(T) = "
         << min(solidThermo_.T().internalField())

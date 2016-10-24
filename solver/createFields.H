@@ -191,3 +191,4 @@ volScalarField gh("gh", g & mesh.C());
         thermo.Cp()
     );
 
+#include "createRTI.H"

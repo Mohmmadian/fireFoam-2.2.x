@@ -73,13 +73,25 @@
 
     // for outputing flame height
     OFstream outFlameHeight("outFlameHeight_"+runTime.timeName());
-    outFlameHeight << "# Time    " << "FlameHeight  "  << nl;
+    outFlameHeight << "# Time    " << "FlameHeight  "  << endl;
 
     volScalarField flameHeight
     (
         IOobject
         (
             "flameHeight",
+            runTime.timeName(),
+            mesh,
+            IOobject::NO_READ
+        ),
+        mesh,
+        dimensionedScalar("zero",dimLength,0.0)
+    );
+    volScalarField flameHeight2
+    (
+        IOobject
+        (
+            "flameHeight2",
             runTime.timeName(),
             mesh,
             IOobject::NO_READ

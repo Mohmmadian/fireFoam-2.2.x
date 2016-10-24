@@ -75,4 +75,5 @@ EXE_LIBS = \
         -lpyrolysisModels_FMG2.1 \
         -lregionCoupling22x \
         -llagrangianIntermediate22x \
-        -lnewInjectionModels  
+        -lnewInjectionModels \
+        -lRadiationBCs_FMG

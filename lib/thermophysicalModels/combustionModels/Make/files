@@ -1,4 +1,6 @@
 eddyDissipationModel/eddyDissipationModels.C
+eddyDissipationLimitModel/eddyDissipationLimitModels.C
+eddyDissMultiFuelStreamModel/eddyDissMultiFuelStreamModels.C
 
 /*eddyDissipationIgnModel/eddyDissipationIgnModels.C*/
 

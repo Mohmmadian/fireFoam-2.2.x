@@ -4,6 +4,7 @@ surfaceFilmModel/surfaceFilmModelNew.C
 noFilm/noFilm.C
 kinematicSingleLayer/kinematicSingleLayer.C
 thermoSingleLayer/thermoSingleLayer.C
+thermoSingleLayerRP/thermoSingleLayerRP.C
 
 /* Sub-models */
 submodels/subModelBase.C

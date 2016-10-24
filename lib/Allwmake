@@ -4,8 +4,10 @@ set -x
 
 wmake libso thermophysicalModels/combustionModels
 wmake libso thermophysicalModels/radiation/submodels/absorptionEmissionModel	
+wmake libso thermophysicalModels/radiation/derivedFvPatchFields
 #wmake libso thermophysicalModels/solidChemistryModel_2.2.x
 wmake libso fvPatchFields
+wmakeLnInclude regionModels/pyrolysisModels
 wmake libso fvPatchFieldsPyrolysis
 wmake libso rtiProbes
 wmake libso splashingModels
